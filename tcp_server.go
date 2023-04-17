@@ -9,7 +9,7 @@ import (
 	"strconv"
 )
 
-var ALF_SEM03 []rune = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,:; ")
+var ALF_SEM03 []rune = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,:; -")
 
 func CelsiusToFahrenheit(value float64) float64 {
 	var fahrenheit float64
@@ -18,22 +18,23 @@ func CelsiusToFahrenheit(value float64) float64 {
 }
 
 func checkKjevik(dekryptertMelding []rune) []rune {
-    checkKjevik := string(dekryptertMelding)
-    if strings.HasPrefix(checkKjevik, "Kjevik") {
-        runeKjevik := []rune(checkKjevik)
-        lastRune := runeKjevik[len(runeKjevik)-1]
-        lastRuneValue, err := strconv.Atoi(string(lastRune))
-        if err != nil {
-            return dekryptertMelding
-        }
-        newRuneValue := CelsiusToFahrenheit(float64(lastRuneValue))
-        newRuneString := strconv.FormatFloat(newRuneValue, 'f', -1, 64)
-        newRunes := []rune(newRuneString)
-        runeKjevik = append(runeKjevik[:len(runeKjevik)-1], newRunes...)
-        kryptertMelding2 := Krypter(runeKjevik, ALF_SEM03, 4)
-        return kryptertMelding2
-    }
-    return dekryptertMelding
+	checkKjevik := string(dekryptertMelding)
+	if strings.HasPrefix(checkKjevik, "Kjevik") {
+		elements := strings.Split(checkKjevik, ";")
+		lastElement := elements[len(elements)-1]
+		lastElementValue, err := strconv.ParseFloat(lastElement, 64)
+		if err != nil {
+			return dekryptertMelding
+		}
+		newElementValue := CelsiusToFahrenheit(float64(lastElementValue))
+		newElementString := strconv.FormatFloat(newElementValue, 'f', 6, 64)
+		elements[len(elements)-1] = newElementString
+		newString := strings.Join(elements, ";")
+		runeKjevik := []rune(newString)
+		kryptertMelding2 := Krypter(runeKjevik, ALF_SEM03, 4)
+		return kryptertMelding2
+	}
+	return dekryptertMelding
 }
 
 func Krypter(melding []rune, alphabet []rune, chiffer int) []rune {
