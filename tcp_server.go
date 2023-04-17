@@ -90,15 +90,21 @@ func main() {
 					kryptertMelding := Krypter(([]rune("pong")), ALF_SEM03, 4)
 					log.Printf("mld1: %s", string(kryptertMelding))
 					kryptertMelding2 := checkKjevik(dekryptertMelding)
-					log.Printf("mld2: %s", string(kryptertMelding2))	
+					log.Printf("mld2: %s", string(kryptertMelding2))
+					kryptertMelding3 := Krypter((dekryptertMelding), ALF_SEM03, 4)
+					log.Printf("mld3: %s", string(kryptertMelding3))	
                                         switch msg := string(dekryptertMelding); msg {
                                         case "ping":
                                                 _, err = c.Write([]byte(string(kryptertMelding)))
-					case "Kjevik;SN39040;18.03.2022 01:50;6":
-                                                _, err = c.Write([]byte(string(kryptertMelding2)))
-                                        default:
-                                                _, err = c.Write([]byte(string(dekryptertMelding)))
-                                        }
+					
+                                        default: if strings.HasPrefix(msg, "Kjevik") {
+						_, err = c.Write([]byte(string(kryptertMelding2)))
+						} else {
+						_, err = c.Write([]byte(string(kryptertMelding3)))
+							}
+						}						 
+                                                
+                                        	
                                         if err != nil {
                                                 if err != io.EOF {
                                                         log.Println(err)
